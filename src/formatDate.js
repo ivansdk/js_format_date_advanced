@@ -49,8 +49,43 @@
  * @returns {string}
  */
 
+function convertYear(year) {
+  return year >= 30
+    ? '19' + year
+    : '20' + year;
+}
+
 function formatDate(date, fromFormat, toFormat) {
-  // write code here
+  const splitDate = date.split(fromFormat[fromFormat.length - 1]);
+  const result = [];
+
+  for (let i = 0; i < toFormat.length - 1; i++) {
+    if (toFormat[i] === 'YY' || toFormat[i] === 'YYYY') {
+      let year = (splitDate[fromFormat.indexOf('YY')]
+                  || splitDate[fromFormat.indexOf('YYYY')]);
+
+      if (toFormat[i] === 'YY') {
+        if (year.length === 4) {
+          year = year.slice(2);
+        }
+      } else if (toFormat[i] === 'YYYY') {
+        if (year.length === 2) {
+          const convertedYear = convertYear(year);
+
+          result.push(convertedYear);
+          continue;
+        }
+      }
+
+      result.push(year);
+    } else if (toFormat[i] === 'MM') {
+      result.push(splitDate[fromFormat.indexOf('MM')]);
+    } else if (toFormat[i] === 'DD') {
+      result.push(splitDate[fromFormat.indexOf('DD')]);
+    }
+  }
+
+  return result.join(toFormat[toFormat.length - 1]);
 }
 
 module.exports = formatDate;
